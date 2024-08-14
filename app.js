@@ -20,13 +20,12 @@ yargs(hideBin(process.argv))
         },
         handler(argv){
             createTodo(argv.title, argv.todo)
-            // console.log(`Success add new todo!`)
         }
     })
     .command({
         command: "list",
         describe: "List all todos",
-        handler(argv){
+        handler(){
             console.log("Showing all todos...")
             setTimeout(listTodos, 2000)
         }

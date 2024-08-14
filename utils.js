@@ -1,5 +1,6 @@
 import fs from "fs";
 import chalk from "chalk";
+import Table from "cli-table3";
 
 const dataPath = "./data/todos.json"
 const loadTodos = () => {
@@ -32,7 +33,7 @@ export const createTodo = (title, todo) => {
             fs.writeFileSync(dataPath, dataJSON)
             console.log(chalk.greenBright.inverse.bold("New todo added!"))
         } else {
-            console.log("Title has already been used!")
+            console.log(chalk.yellow.inverse.bold("Title has already been used!"))
         }
     } catch (error) {
         console.log(chalk.red.inverse.bold(`An error occured: ${error.message}`))
@@ -46,7 +47,33 @@ export const listTodos = () => {
         if (!todos.length){
             console.log(chalk.red.inverse.bold(`Todos still empty!`))
         } else {
-            console.log(todos)
+            const table = new Table({
+                chars: {
+                    'top': '-',
+                    'top-mid': '+',
+                    'top-left': '+',
+                    'top-right': '+',
+                    'bottom': '-',
+                    'bottom-mid': '+',
+                    'bottom-left': '+',
+                    'bottom-right': '+',
+                    'left': '|',
+                    'left-mid': '+',
+                    'mid': '-',
+                    'mid-mid': '+',
+                    'right': '|',
+                    'right-mid': '+',
+                    'middle': '|'
+                },
+                head: ["title", "todo"],
+                colWidths: [30, 50],
+            })
+
+            todos.forEach(todo => {
+                table.push([todo.title, todo.todo])
+            })
+
+            console.log(table.toString())
         }
     } catch (error) {
         console.log(chalk.red.inverse.bold(`An error occured: ${error.message}`))
@@ -80,11 +107,12 @@ export const deleteTodo = (title) => {
     try {
         const todos = loadTodos()
 
+        // Use 'item.title !== title' to correctly filter out the item with the matching title
         const remain = todos.filter((item) => {
-            todos.title !== title
+            return item.title !== title
         })
 
-        dataJSON = JSON.stringify(remain)
+        let dataJSON = JSON.stringify(remain)
         fs.writeFileSync(dataPath, dataJSON)
 
         if (remain.length === todos.length) {
@@ -93,7 +121,7 @@ export const deleteTodo = (title) => {
             console.log(chalk.green.inverse.bold(`Todo with title ${title} deleted successfully!`))
         }
     } catch (error) {
-        console.log(chalk.red.inverse.bold(`An error occured: ${error}`))
+        console.log(chalk.red.inverse.bold(`An error occurred: ${error.message}`))
     }
 }
 
