@@ -20,7 +20,7 @@ yargs(hideBin(process.argv))
         },
         handler(argv){
             createTodo(argv.title, argv.todo)
-            console.log(`Success add new todo!`)
+            // console.log(`Success add new todo!`)
         }
     })
     .command({
